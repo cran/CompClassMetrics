@@ -1,0 +1,18 @@
+#' PLCO
+#'
+#' Description of PLCO.
+#'
+#' @format A data frame with 239 rows and 7 columns:
+#' \describe{
+#'   \item{ID}{Participant ID}
+#'   \item{Group}{The disease class label}
+#'   \item{CA125}{Numeric, value of CA125}
+#'   \item{CA153}{Numeric, value of CA153}
+#'   \item{CA199}{Numeric, value of CA199}
+#'   \item{KLK6}{Numeric, value of KLK6}
+#'   \item{CA724}{Numeric, value of CA724}
+#' }
+#' @source This is a subset of PLCO dataset, available at https://edrn.nci.nih.gov.
+#' @docType data
+#' @name PLCO
+NULL
