@@ -1,7 +1,7 @@
 
 #' R function for obtaining all combinations of maximum and minimum of a given dataset
 #'
-#' @param df Given dataset, in list form
+#' @param df Given dataset, in list
 #' @return A list of all combinations of maximum and minimum of df
 #' @export
 get_max_min_permutations <- function(df) {
@@ -23,7 +23,7 @@ get_max_min_permutations <- function(df) {
 #' R function that calculates empirical estimates of HUMcm
 #'
 #' This function provides empirical estimates of HUMcm
-#' @param dat test values in list, each element represents biomarker values for a disease group
+#' @param dat test values in list, each element represents biomarker values for a disease group, ordered in ascending severity
 #' @param num_sub a vector of number of subclasses in each subclass
 #' @return The empirical estimate of HUMcm based on given data and num_sub
 #' @examples
@@ -40,11 +40,11 @@ get_max_min_permutations <- function(df) {
 
 #' # calculate HUMcm of Y.dat and num_sub
 
-#' hum.dynamic(Y.dat,num_sub)
+#' humc_dynamic(Y.dat,num_sub)
 
 #' @export
 
-hum.dynamic <- function(dat, num_sub) {
+humc_dynamic <- function(dat, num_sub) {
   # Calculate the maximum and minimum values for each subset
   subsets <- split(dat, rep(1:length(num_sub), times=num_sub))
 
@@ -111,7 +111,7 @@ CI.func <- function(x){
 #'
 #' This function provides non-parametric bootstrap percentile confidence interval of HUMcm
 
-#' @param dat test values in list, each element represents biomarker values for a disease group
+#' @param dat test values in list, each element represents biomarker values for a disease group, ordered in ascending severity
 #' @param num_sub a vector of number of subclasses in each subclass
 #' @param B the number of iteration
 #' @return The non-parametric bootstrap percentile confidence interval of HUMcm
@@ -130,18 +130,18 @@ CI.func <- function(x){
 
 #' # calculate the non-parametric bootstrap percentile confidence interval
 
-#' HUMC_NPCI(Y.dat,num_sub,50)
+#' humc_npci(Y.dat,num_sub,50)
 
 #' @export
 
-HUMC_NPCI <- function(dat,num_sub,B){
+humc_npci <- function(dat,num_sub,B){
 
   humC.network <- c()
 
   repeat{
 
     databoot <- lapply(dat,function(x){sample(x,size = length(x),replace = TRUE)})
-    humC.value <- hum.dynamic(dat=databoot,num_sub=num_sub)
+    humC.value <- humc_dynamic(dat=databoot,num_sub=num_sub)
     humC.network <- c(humC.network,humC.value)
 
     if(length(humC.network)==B) break

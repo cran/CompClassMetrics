@@ -14,5 +14,5 @@
 #' }
 #' @source This is a subset of PLCO dataset, available at https://edrn.nci.nih.gov.
 #' @docType data
-#' @name PLCO
+#' @name plco
 NULL

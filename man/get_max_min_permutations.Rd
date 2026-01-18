@@ -7,7 +7,7 @@
 get_max_min_permutations(df)
 }
 \arguments{
-\item{df}{Given dataset, in list form}
+\item{df}{Given dataset, in list}
 }
 \value{
 A list of all combinations of maximum and minimum of df

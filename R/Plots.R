@@ -13,7 +13,7 @@ NULL
 #' @return The compound ROC surface and chance surface
 #' @importFrom plot3D persp3D
 #' @export
-ROCC_Surface <- function(k1,k2,k3,distribution,arg1,arg2){
+rocc_surface <- function(k1,k2,k3,distribution,arg1,arg2){
 change_surface <- function(p1,p3){((1-p3^{1/k3}-p1^{1/k1})^{k2})*(1-p3^{1/k3}>p1^{1/k1})}
 ROCC <- function(p1,p3){
     if(distribution=="Normal"){
@@ -24,7 +24,7 @@ ROCC <- function(p1,p3){
       if(k1>1){
         solve1 <- function(p1,c1){p1-eval(parse(text=paste(sapply(1:k1,function(a) substitute(pnorm(c1,arg1[i],arg2[i]),list(i=a))),collapse="*")))}
         cut1 <-function(p1){
-          uniroot(solve1,interval=c(-50,500),p1=p1)$root
+          uniroot(solve1,interval=c(-500,5000),p1=p1)$root
         }}
       Cut1 <- Vectorize(cut1)
       if(k3==1){
@@ -34,7 +34,7 @@ ROCC <- function(p1,p3){
       if(k3>1){
         solve2 <- function(p3,c2){1-p3-eval(parse(text=paste(sapply(1:k3,function(a) substitute(pnorm(c2,arg1[k1+k2+i],arg2[k1+k2+i],lower.tail = F),list(i=a))),collapse="*")))}
         cut2 <-function(p3){
-          uniroot(solve2,interval=c(-50,500),p3=p3)$root
+          uniroot(solve2,interval=c(-500,5000),p3=p3)$root
         }}
       Cut2 <- Vectorize(cut2)
 
@@ -55,7 +55,7 @@ ROCC <- function(p1,p3){
       if(k1>1){
         solve1 <- function(p1,c1){p1-eval(parse(text=paste(sapply(1:k1,function(a) substitute(pgamma(c1,shape=arg1[i],rate=arg2[i]),list(i=a))),collapse="*")))}
         cut1 <-function(p1){
-          uniroot(solve1,interval=c(0.001,500),p1=p1)$root
+          uniroot(solve1,interval=c(0,5000),p1=p1)$root
         }}
       Cut1 <- Vectorize(cut1)
       if(k3==1){
@@ -65,7 +65,7 @@ ROCC <- function(p1,p3){
       if(k3>1){
         solve2 <- function(p3,c2){1-p3-eval(parse(text=paste(sapply(1:k3,function(a) substitute(pgamma(c2,shape=arg1[k1+k2+i],rate=arg2[k1+k2+i],lower.tail = F),list(i=a))),collapse="*")))}
         cut2 <-function(p3){
-          uniroot(solve2,interval=c(0.001,500),p3=p3)$root
+          uniroot(solve2,interval=c(0,5000),p3=p3)$root
         }}
       Cut2 <- Vectorize(cut2)
 
@@ -103,7 +103,7 @@ persp3D(p1, p3, TC2.2,add=T,colkey = F,box=F,expand = 20, cex.axis=1.5,cex.lab =
 #' @param arg2 if distribution is gamma input variance parameter, if gamma input rate parameters
 #' @return The overall ROC curve and chance curve
 #' @export
-ROCC_curve <- function(k1,k2,distribution,arg1,arg2){
+rocc_curve <- function(k1,k2,distribution,arg1,arg2){
 
   change_curve <- function(p){(1-(1-p)^(1/k1))^k2}
 
@@ -117,7 +117,7 @@ ROCC_curve <- function(k1,k2,distribution,arg1,arg2){
       if(k1>1){
         solve1 <- function(p,c1){p-eval(parse(text=paste(sapply(1:k1,function(a) substitute(pnorm(c1,arg1[i],arg2[i]),list(i=a))),collapse="*")))}
         cut1 <-function(p){
-          uniroot(solve1,interval=c(-50,500),p=p)$root
+          uniroot(solve1,interval=c(-500,5000),p=p)$root
         }}
 
       Cut1 <- Vectorize(cut1)
@@ -143,7 +143,7 @@ ROCC_curve <- function(k1,k2,distribution,arg1,arg2){
       if(k1>1){
         solve1 <- function(p,c1){p-eval(parse(text=paste(sapply(1:k1,function(a) substitute(pgamma(c1,arg1[i],arg2[i]),list(i=a))),collapse="*")))}
         cut1 <-function(p){
-          uniroot(solve1,interval=c(0,500),p=p)$root
+          uniroot(solve1,interval=c(0.001,5000),p=p)$root
         }}
 
       Cut1 <- Vectorize(cut1)

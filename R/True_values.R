@@ -6,16 +6,16 @@ NULL
 #' @param k1 number of subclasses in main class-1
 #' @param k2 number of subclasses in main class-2
 #' @param distribution the distribution of marker value follows Normal or Gamma
-#' @param arg1 if distribution is normal input mean parameters of all subclasses in a vector, if gamma input shape parameters
-#' @param arg2 if distribution is gamma input variance parameter, if gamma input rate parameters
+#' @param arg1 if distribution is normal input mean parameters of all subclasses in a vector, if gamma input arg1 parameters
+#' @param arg2 if distribution is gamma input variance parameter, if gamma input arg2 parameters
 #' @return The true value of AUCo under given distribution and parameters
 #' @importFrom cubature hcubature
 #' @export
-AUCofunc <- function(k1,k2,distribution,arg1,arg2){
+auco_func <- function(k1,k2,distribution,arg1,arg2){
 
 if(distribution=="Normal"){
   integrand <- function(s) {
-    # Part 1: Generate the first term (pnorm products for k2)
+    # Part 1: Genearg2 the first term (pnorm products for k2)
     part1 <- paste0(
       "(",
       paste(
@@ -27,7 +27,7 @@ if(distribution=="Normal"){
       ")"
     )
 
-    # Part 2: Generate the second term (sum of products for k1)
+    # Part 2: Genearg2 the second term (sum of products for k1)
 
 if(k1==1){
     part2 <- paste(dnorm(s,arg1[k1],arg2[k1]))
@@ -119,11 +119,11 @@ if(k1>1){
 #' @param k2 number of subclasses in main class-2
 #' @param k3 number of subclasses in main class-3
 #' @param distribution the distribution of marker value follows Normal or Gamma
-#' @param arg1 if distribution is normal input mean parameters of all subclasses in a vector, if gamma input shape parameters
-#' @param arg2 if distribution is gamma input variance parameter, if gamma input rate parameters
+#' @param arg1 if distribution is normal input mean parameters of all subclasses in a vector, if gamma input arg1 parameters
+#' @param arg2 if distribution is gamma input variance parameter, if gamma input arg2 parameters
 #' @return The true value of VUSc under given distribution and parameters
 #' @export
-CVUS.calc.func <- function(k1,k2,k3,distribution,arg1,arg2){
+cvus_func <- function(k1,k2,k3,distribution,arg1,arg2){
   ##Distribution: Normal
   if(distribution=="Normal"){
     if(k1==1){
@@ -159,30 +159,30 @@ CVUS.calc.func <- function(k1,k2,k3,distribution,arg1,arg2){
   if(distribution=="Gamma"){
     if(k1==1){
       cut1 <-function(p1){
-        qgamma(p1,shape=arg1[1],rate=arg2[1])
+        qgamma(p1,arg1[1],arg2[1])
       }}
     if(k1>1){
-      solve1 <- function(p1,c1){p1-eval(parse(text=paste(sapply(1:k1,function(a) substitute(pgamma(c1,shape=arg1[i],rate=arg2[i]),list(i=a))),collapse="*")))}
+      solve1 <- function(p1,c1){p1-eval(parse(text=paste(sapply(1:k1,function(a) substitute(pgamma(c1,arg1[i],arg2[i]),list(i=a))),collapse="*")))}
       cut1 <-function(p1){
         uniroot(solve1,interval=c(0.001,500),p1=p1)$root
       }}
     Cut1 <- Vectorize(cut1)
     if(k3==1){
       cut2<-function(p3){
-        qgamma(1-p3,shape=arg1[k1+k2+1],rate=arg2[k1+k2+1])
+        qgamma(1-p3,arg1[k1+k2+1],arg2[k1+k2+1])
       }}
     if(k3>1){
-      solve2 <- function(p3,c2){1-p3-eval(parse(text=paste(sapply(1:k3,function(a) substitute(pgamma(c2,shape=arg1[k1+k2+i],rate=arg2[k1+k2+i],lower.tail = F),list(i=a))),collapse="*")))}
+      solve2 <- function(p3,c2){1-p3-eval(parse(text=paste(sapply(1:k3,function(a) substitute(pgamma(c2,arg1[k1+k2+i],arg2[k1+k2+i],lower.tail = F),list(i=a))),collapse="*")))}
       cut2 <-function(p3){
         uniroot(solve2,interval=c(0.001,500),p3=p3)$root
       }}
     Cut2 <- Vectorize(cut2)
 
     if(k2==1){
-      integrand.3q1 <- function(p1,p3){(pgamma(Cut2(p3),shape=arg1[k1+1],rate=arg2[k1+1])-pgamma(Cut1(p1),shape=arg1[k1+1],rate=arg2[k1+1]))*(Cut2(p3)>Cut1(p1))}
+      integrand.3q1 <- function(p1,p3){(pgamma(Cut2(p3),arg1[k1+1],arg2[k1+1])-pgamma(Cut1(p1),arg1[k1+1],arg2[k1+1]))*(Cut2(p3)>Cut1(p1))}
     }
     if(k2>1){
-      integrand.3q1 <- function(p1,p3){eval(parse(text=paste(sapply(1:k2,function(a) substitute((pgamma(Cut2(p3),shape=arg1[k1+i],rate=arg2[k1+i])-pgamma(Cut1(p1),shape=arg1[k1+i],rate=arg2[k1+i])),list(i=a))),collapse="*")))*(Cut2(p3)>Cut1(p1))}
+      integrand.3q1 <- function(p1,p3){eval(parse(text=paste(sapply(1:k2,function(a) substitute((pgamma(Cut2(p3),arg1[k1+i],arg2[k1+i])-pgamma(Cut1(p1),arg1[k1+i],arg2[k1+i])),list(i=a))),collapse="*")))*(Cut2(p3)>Cut1(p1))}
     }
 
   }
@@ -202,25 +202,23 @@ CVUS.calc.func <- function(k1,k2,k3,distribution,arg1,arg2){
 #' R function that calculates the true values of HUMcm when distribution is known
 #'
 #' @param distribution the distribution of marker value follows Normal or Gamma
-#' @param arg1 if distribution is normal input mean parameters of all subclasses in a vector, if gamma input shape parameters
-#' @param arg2 if distribution is gamma input variance parameter, if gamma input rate parameters
+#' @param arg1 if distribution is normal input mean parameters of all subclasses in a vector, if gamma input arg1 parameters
+#' @param arg2 if distribution is gamma input variance parameter, if gamma input arg2 parameters
 #' @param num_sub the vector of number of subclasses in each main class
 #' @return The true value of HUMcm under given distribution and parameters
 #' @export
-HUMC_fourclass <- function(distribution,arg1,arg2,num_sub){
+humc_fourclass <- function(distribution,arg1,arg2,num_sub){
   k1=num_sub[1]
   k2=num_sub[2]
   k3=num_sub[3]
   k4=num_sub[4]
 
   if(distribution=="Normal"){
-    mu=arg1
-    sd=arg2
 
     integrand.full <- function(x1,x2,x3){
-      (F_min_given_max_partial_normal_upper(y_min=x1,y_max=x2,mu[(k1+1):(k1+k2)],sd[(k1+1):(k1+k2)]))*
-        f_order_max_normal(y_max=x1,mu[1:k1],sd[1:k1])*(F_min_given_max_partial_normal_upper(y_min=x2,y_max=x3,mu[(k1+k2+1):(k1+k2+k3)],sd[(k1+k2+1):(k1+k2+k3)]))*
-        f_order_max_normal(y_max=x2,mu[(k1+1):(k1+k2)],sd[(k1+1):(k1+k2)])*(1-F_order_r_normal(x3,mu[(k1+k2+k3+1):(k1+k2+k3+k4)],sd[(k1+k2+k3+1):(k1+k2+k3+k4)],1))*f_order_max_normal(x3,mu[(k1+k2+1):(k1+k2+k3)],sd[(k1+k2+1):(k1+k2+k3)])
+      (cdf_min_given_max_partial_upper(y_min=x1,y_max=x2,distribution="Normal",arg1[(k1+1):(k1+k2)],arg2[(k1+1):(k1+k2)]))*
+        f_order_max(y_max=x1,distribution="Normal",arg1[1:k1],arg2[1:k1])*(cdf_min_given_max_partial_upper(y_min=x2,y_max=x3,distribution="Normal",arg1[(k1+k2+1):(k1+k2+k3)],arg2[(k1+k2+1):(k1+k2+k3)]))*
+        f_order_max(y_max=x2,distribution="Normal",arg1[(k1+1):(k1+k2)],arg2[(k1+1):(k1+k2)])*(1-cdf_order_r(x3,distribution="Normal",arg1[(k1+k2+k3+1):(k1+k2+k3+k4)],arg2[(k1+k2+k3+1):(k1+k2+k3+k4)],r=1))*f_order_max(x3,distribution="Normal",arg1[(k1+k2+1):(k1+k2+k3)],arg2[(k1+k2+1):(k1+k2+k3)])
     }
 
     integral <- integrate(Vectorize(function(x3) {
@@ -234,13 +232,11 @@ HUMC_fourclass <- function(distribution,arg1,arg2,num_sub){
   }
 
   if(distribution=="Gamma"){
-    shape=arg1
-    rate=arg2
 
     integrand.full <- function(x1,x2,x3){
-      (F_min_given_max_partial_gamma_upper(y_min=x1,y_max=x2,shape[(k1+1):(k1+k2)],rate[(k1+1):(k1+k2)]))*f_order_max_gamma(y_max=x1,shape[1:k1],rate[1:k1])*
-        (F_min_given_max_partial_gamma_upper(y_min=x2,y_max=x3,shape[(k1+k2+1):(k1+k2+k3)],rate[(k1+k2+1):(k1+k2+k3)]))*f_order_max_gamma(y_max=x2,shape[(k1+1):(k1+k2)],rate[(k1+1):(k1+k2)])*
-        (1-F_order_r_gamma(x3,shape[(k1+k2+k3+1):(k1+k2+k3+k4)],rate[(k1+k2+k3+1):(k1+k2+k3+k4)],1))*f_order_max_gamma(x3,shape[(k1+k2+1):(k1+k2+k3)],rate[(k1+k2+1):(k1+k2+k3)])
+      (cdf_min_given_max_partial_upper(y_min=x1,y_max=x2,distribution="Gamma",arg1[(k1+1):(k1+k2)],arg2[(k1+1):(k1+k2)]))*f_order_max(y_max=x1,distribution="Gamma",arg1[1:k1],arg2[1:k1])*
+        (cdf_min_given_max_partial_upper(y_min=x2,y_max=x3,distribution="Gamma",arg1[(k1+k2+1):(k1+k2+k3)],arg2[(k1+k2+1):(k1+k2+k3)]))*f_order_max(y_max=x2,distribution="Gamma",arg1[(k1+1):(k1+k2)],arg2[(k1+1):(k1+k2)])*
+        (1-cdf_order_r(x3,distribution="Gamma",arg1[(k1+k2+k3+1):(k1+k2+k3+k4)],arg2[(k1+k2+k3+1):(k1+k2+k3+k4)],r=1))*f_order_max(x3,distribution="Gamma",arg1[(k1+k2+1):(k1+k2+k3)],arg2[(k1+k2+1):(k1+k2+k3)])
     }
 
     integral <- integrate(Vectorize(function(x3) {
@@ -258,9 +254,9 @@ HUMC_fourclass <- function(distribution,arg1,arg2,num_sub){
 #' R function that calculates the minimum of HUMcm under given structure
 #'
 #' @param num_sub the vector of number of subclasses in each main class
-#' @return The minimum of HUMcm
+#' @return the minimum of HUMcm
 #' @export
-HUM_min <- function(num_sub) {
+humc_min <- function(num_sub) {
   factorials <- factorial(num_sub)
   numerator <- prod(factorials)
   denominator <- factorial(sum(num_sub))
@@ -274,7 +270,7 @@ HUM_min <- function(num_sub) {
 #' @param num_sub the vector of number of subclasses in each main class
 #' @return The standardized HUMcm
 #' @export
-HUM_standard <- function(value,num_sub){
-  HUM_standard_value <- (value-HUM_min(num_sub))/(1-HUM_min(num_sub))
+humc_standard <- function(value,num_sub){
+  HUM_standard_value <- (value-humc_min(num_sub))/(1-humc_min(num_sub))
   return(HUM_standard_value)
 }
