@@ -208,10 +208,12 @@ cvus_func <- function(k1,k2,k3,distribution,arg1,arg2){
 #' @return The true value of HUMcm under given distribution and parameters
 #' @export
 humc_fourclass <- function(distribution,arg1,arg2,num_sub){
-  k1=num_sub[1]
-  k2=num_sub[2]
-  k3=num_sub[3]
-  k4=num_sub[4]
+
+
+k1 = num_sub[1]
+k2 = num_sub[2]
+k3 = num_sub[3]
+k4 = num_sub[4]
 
   if(distribution=="Normal"){
 

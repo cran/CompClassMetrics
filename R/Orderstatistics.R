@@ -99,7 +99,7 @@ cdf_min_max_partial <- function(y_min,y_max,distribution,arg1,arg2){
       mu=arg1
       sd=arg2
 
-    (y_min<=y_max)*(1/factorial(k-1)*
+    f_cdf <-function(y_min,y_max) (y_min<=y_max)*(1/factorial(k-1)*
 
 
       eval(parse(text=paste(sapply(1:dim(perm)[1], function(j) paste('(',paste(paste(sapply(perm[j,1],function(a) substitute(dnorm(y_max,mu[i],sd[i]),list(i=a)))),
@@ -114,7 +114,7 @@ cdf_min_max_partial <- function(y_min,y_max,distribution,arg1,arg2){
      shape=arg1
      rate=arg2
 
-     (y_min<=y_max)*(1/factorial(k-1)*
+     f_cdf <-function(y_min,y_max) (y_min<=y_max)*(1/factorial(k-1)*
 
 
        eval(parse(text=paste(sapply(1:dim(perm)[1], function(j) paste('(',paste(paste(sapply(perm[j,1],function(a) substitute(dgamma(y_max,shape[i],rate[i]),list(i=a)))),
@@ -124,6 +124,7 @@ cdf_min_max_partial <- function(y_min,y_max,distribution,arg1,arg2){
 
        )))
    }
+   return(f_cdf(y_min,y_max))
 }
 
 #' R function that calculates the conditional probability of minimum greater than y_min given maximum equals to y_max of random variables (upper tail probability of minimum given maximum)
